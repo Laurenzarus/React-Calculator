@@ -1,0 +1,8 @@
+.displayBox {
+    background-color: black;
+    color: white;
+    font-weight: bolder;
+    font-size: 12vh;
+    padding: 1vh 0;
+    text-align: right;
+}
