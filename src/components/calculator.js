@@ -9,6 +9,7 @@ class Calculator extends React.Component {
         super(props);
         this.state = {
             displayValue: "",
+			displayStr: "",
             operator: "",
             previousValue: "",
             button_values: [
@@ -20,59 +21,6 @@ class Calculator extends React.Component {
             ]
         }
     }
-
-	handleClick(i) {
-		const displayInt = parseInt(i);
-		if (!isNaN(parseInt(i))) {
-			// number
-			this.setState({
-				displayValue: this.state.displayValue + i
-			});
-		}
-		else {
-			// operator, or AC
-			const currentValue = this.state.displayValue;
-			if (i === "AC") {
-				this.setState({
-					displayValue: "",
-					operator: "",
-					previousValue: "",
-				});
-			}
-			else if (i === "+/-") {
-				if (currentValue !== "") {
-					this.setState({
-						displayValue: currentValue[0] !== "-" ? "-" + currentValue : currentValue.slice(1, currentValue.length)
-					});
-				}
-			}
-			else if (i === ".") {
-				if (currentValue !== "") {
-					this.setState({
-						displayValue: currentValue + ".",
-					});
-				}
-				else {
-					this.setState({
-						displayValue: "0.",
-					});
-				}
-			}
-			else {
-				// operator
-				if (i === "=") {
-					this.performEquals();
-				}
-				if (this.state.operator.length === 0) {
-					this.setState({
-						displayValue: "",
-						previousValue: this.state.displayValue,
-						operator: i,
-					});
-				}
-			}
-		}
-	}
 
 	performEquals() {
 		if (this.state.displayValue.length !== 0
@@ -96,7 +44,76 @@ class Calculator extends React.Component {
 			}
 			this.setState({
 				displayValue: result % 1 === 0 ? result : result.toFixed(5),
+				// displayStr: "",
+				operator: "",
+				previousValue: "",
 			});
+		}
+	}
+
+	handleClick(i) {
+		if (!isNaN(parseInt(i))) {
+			// number
+			this.setState({
+				displayValue: this.state.displayValue + i,
+				// displayStr: this.state.displayStr + i,
+			});
+		}
+		else {
+			// operator, or AC
+			const currentValue = this.state.displayValue;
+			if (i === "AC") {
+				this.setState({
+					displayValue: "",
+					displayStr: "",
+					operator: "",
+					previousValue: "",
+				});
+			}
+			else if (i === "+/-") {
+				if (currentValue !== "") {
+					this.setState({
+						displayValue: currentValue[0] !== "-" ? "-" + currentValue : currentValue.slice(1, currentValue.length),
+						// displayStr: this.state.displayStr + "+/-",
+					});
+				}
+			}
+			else if (i === ".") {
+				if (currentValue !== "") {
+					this.setState({
+						displayValue: currentValue + ".",
+						// displayStr: this.state.displayStr + ".",
+					});
+				}
+				else {
+					this.setState({
+						displayValue: "0.",
+						// displayStr: this.state.displayStr + ".",
+					});
+				}
+			}
+			else {
+				// operators
+				if (i === "=") {
+					this.performEquals();
+				}
+				if (this.state.operator.length === 0) {
+					this.setState({
+						displayValue: "",
+						// displayStr: this.state.displayStr + i,
+						previousValue: this.state.displayValue,
+						operator: i,
+					});
+				}
+				else {
+					if (this.state.previousValue.length !== 0) {
+						this.performEquals();
+						this.setState({
+							operator: i,
+						});
+					}
+				}
+			}
 		}
 	}
 
@@ -104,6 +121,7 @@ class Calculator extends React.Component {
         return (
             <div id="outercontainer" className="outercontainer">
                 <Display value={this.state.displayValue === "" ? "0" : this.state.displayValue}></Display>
+				// <Display value={this.state.displayStr}></Display>
                 <div className="row buttonRow">
                     <CalcButton
 						onClick={() => {this.handleClick("AC")}} buttonValue="AC"
