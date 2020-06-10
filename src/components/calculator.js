@@ -97,22 +97,36 @@ class Calculator extends React.Component {
 				if (i === "=") {
 					this.performEquals();
 				}
-				if (this.state.operator.length === 0) {
-					this.setState({
-						displayValue: "",
-						// displayStr: this.state.displayStr + i,
-						previousValue: this.state.displayValue,
-						operator: i,
-					});
-				}
 				else {
-					if (this.state.previousValue.length !== 0) {
-						this.performEquals();
+					if (this.state.operator.length === 0) {
 						this.setState({
+							displayValue: "",
+							// displayStr: this.state.displayStr + i,
+							previousValue: this.state.displayValue,
 							operator: i,
 						});
 					}
+					else {
+						if (this.state.previousValue.length !== 0 && this.state.operator.length !== 0) {
+							this.performEquals();
+							// setTimeout(() => {}, 1000);
+							this.setState({
+								displayValue: "",
+								operator: i,
+								previousValue: this.state.displayValue,
+							});
+						}
+						else if (this.state.previousValue.length !== 0) {
+							this.performEquals();
+							this.setState({
+								displayValue: "",
+								previousValue: this.state.displayValue,
+								operator: i,
+							});
+						}
+					}
 				}
+
 			}
 		}
 	}
@@ -121,7 +135,6 @@ class Calculator extends React.Component {
         return (
             <div id="outercontainer" className="outercontainer">
                 <Display value={this.state.displayValue === "" ? "0" : this.state.displayValue}></Display>
-				// <Display value={this.state.displayStr}></Display>
                 <div className="row buttonRow">
                     <CalcButton
 						onClick={() => {this.handleClick("AC")}} buttonValue="AC"
